@@ -59,7 +59,8 @@ public final class StockInfoFragment extends RxFragment {
         // Clear Observable Cache
         binding.clearCacheButton.setOnClickListener(v -> {
             stockDataRepository.clearCache();
-            Toast.makeText(getContext(), "observable cache cleared!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "observable cache cleared!", Toast.LENGTH_LONG)
+                    .show();
         });
 
         return binding.getRoot();

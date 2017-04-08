@@ -32,13 +32,15 @@ public final class RxUtil {
     }
 
     private static <T> ObservableTransformer<T, T> applyRequestStatus(RxFragment rxFragment) {
-        return upstream -> upstream.doOnSubscribe(disposable -> rxFragment.setRequestInProgress(true))
+        return upstream -> upstream
+                .doOnSubscribe(disposable -> rxFragment.setRequestInProgress(true))
                 .doOnTerminate(() -> rxFragment.setRequestInProgress(false));
     }
 
     private static <T> ObservableTransformer<T, T> showLoadingDialog(RxFragment rxFragment) {
         return observable -> observable
-                .doOnSubscribe(disposable -> DialogUtils.showProgressDialog(rxFragment.getFragmentManager(), LOADING_MESSAGE))
+                .doOnSubscribe(disposable -> DialogUtils.showProgressDialog(
+                        rxFragment.getFragmentManager(), LOADING_MESSAGE))
                 .doOnTerminate(() -> DialogUtils.hideProgressDialog(rxFragment.getFragmentManager()));
     }
 }
