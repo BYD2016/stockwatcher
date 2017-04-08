@@ -6,9 +6,13 @@ import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class RxUtil {
+public final class RxUtil {
 
-    public static final String LOADING_MESSAGE = "Loading";
+    private static final String LOADING_MESSAGE = "Loading";
+
+    private static final ObservableTransformer schedulersTransformer =
+            observable -> observable.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread());
 
     public static <T> ObservableTransformer<T, T> applyUIDefaults(RxFragment rxFragment) {
         return upstream -> upstream
@@ -18,16 +22,13 @@ public class RxUtil {
                 .compose(RxUtil.showLoadingDialog(rxFragment));
     }
 
-    private static final ObservableTransformer schedulersTransformer =
-            observable -> observable.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-
     private static <T> ObservableTransformer<T, T> applySchedulers() {
         return (ObservableTransformer<T, T>) schedulersTransformer;
     }
 
     private static <T> ObservableTransformer<T, T> addToCompositeDisposable(RxFragment rxFragment) {
-        return upstream -> upstream.doOnSubscribe(disposable -> rxFragment.getCompositeDisposable().add(disposable));
+        return upstream -> upstream.doOnSubscribe(
+                disposable -> rxFragment.getCompositeDisposable().add(disposable));
     }
 
     private static <T> ObservableTransformer<T, T> applyRequestStatus(RxFragment rxFragment) {

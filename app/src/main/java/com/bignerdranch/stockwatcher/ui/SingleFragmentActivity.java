@@ -2,6 +2,7 @@ package com.bignerdranch.stockwatcher.ui;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
@@ -13,14 +14,15 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     protected abstract Fragment createFragment();
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivitySingleFragmentBinding binding
                 = DataBindingUtil.setContentView(this, R.layout.activity_single_fragment);
 
         if (savedInstanceState == null) {
-            Fragment fragment = createFragment();
-            getSupportFragmentManager().beginTransaction()
+            Fragment fragment = this.createFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
                     .add(binding.fragmentContainer.getId(), fragment)
                     .commit();
         }

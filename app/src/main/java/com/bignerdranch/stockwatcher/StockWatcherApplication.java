@@ -13,13 +13,8 @@ public class StockWatcherApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        initAppComponent();
-    }
 
-    private void initAppComponent() {
-        appComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule())
-                .build();
+        this.initAppComponent();
     }
 
     public static StockWatcherApplication get(Context context) {
@@ -27,8 +22,14 @@ public class StockWatcherApplication extends Application {
     }
 
     public static AppComponent getAppComponent(Context context) {
-        StockWatcherApplication stockWatcherApplication = get(context.getApplicationContext());
+        StockWatcherApplication stockWatcherApplication = StockWatcherApplication.get(context);
         return stockWatcherApplication.getAppComponent();
+    }
+
+    private void initAppComponent() {
+        this.appComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule())
+                .build();
     }
 
 }

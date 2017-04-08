@@ -22,9 +22,10 @@ public abstract class RxFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         compositeDisposable = new CompositeDisposable();
         if (savedInstanceState != null) {
-            requestInProgress = savedInstanceState.getBoolean(EXTRA_RX_REQUEST_IN_PROGRESS, false);
+            this.requestInProgress = savedInstanceState.getBoolean(EXTRA_RX_REQUEST_IN_PROGRESS, false);
         }
     }
 
@@ -45,8 +46,8 @@ public abstract class RxFragment extends Fragment {
 
     @Override
     public void onPause() {
+        this.compositeDisposable.clear();
         super.onPause();
-        compositeDisposable.clear();
     }
 
     public abstract void loadRxData();

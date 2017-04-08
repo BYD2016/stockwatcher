@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import io.reactivex.Observable;
 
-public class StockInfoFragment extends RxFragment {
+public final class StockInfoFragment extends RxFragment {
 
     @Inject
     StockDataRepository stockDataRepository;
@@ -31,16 +31,18 @@ public class StockInfoFragment extends RxFragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         StockWatcherApplication.getAppComponent(getContext()).inject(this);
-        super.onCreate(savedInstanceState); // TODO: Is there a reason this is called second?
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_stock_info, container, false);
 
+        // Fetch Stock Data
         binding.fetchDataButton.setOnClickListener(v -> {
             binding.errorMessage.setVisibility(View.GONE);
             loadRxData();
@@ -54,6 +56,7 @@ public class StockInfoFragment extends RxFragment {
             return false;
         });
 
+        // Clear Observable Cache
         binding.clearCacheButton.setOnClickListener(v -> {
             stockDataRepository.clearCache();
             Toast.makeText(getContext(), "observable cache cleared!", Toast.LENGTH_LONG).show();

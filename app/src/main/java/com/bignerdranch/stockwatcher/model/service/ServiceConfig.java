@@ -2,10 +2,11 @@ package com.bignerdranch.stockwatcher.model.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
-@Data
 @AllArgsConstructor
 public class ServiceConfig {
 
-    public String baseServiceUrl;
+    @Getter
+    private String baseServiceUrl;
 }

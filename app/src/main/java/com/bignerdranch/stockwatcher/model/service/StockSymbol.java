@@ -8,8 +8,8 @@ import lombok.Data;
 public class StockSymbol {
 
     @SerializedName("Symbol")
-    String symbol;
+    private String symbol;
 
     @SerializedName("Name")
-    String name;
+    private String name;
 }

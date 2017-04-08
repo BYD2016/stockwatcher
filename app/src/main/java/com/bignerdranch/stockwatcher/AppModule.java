@@ -25,9 +25,37 @@ class AppModule {
     private static final int HTTP_CONNECT_TIMEOUT = 60;
 
     @Provides
-    @Singleton
-    StockDataRepository provideStockDataRepository(StockService stockService) {
-        return new StockDataRepository(stockService);
+    ServiceConfig provideServiceConfig() {
+        return new ServiceConfig(STOCK_SERVICE_ENDPOINT);
+    }
+
+    @Provides
+    HttpLoggingInterceptor provideLoggingInterceptor() {
+        return new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
+    }
+
+    @Provides
+    OkHttpClient provideOkHttpClient(HttpLoggingInterceptor loggingInterceptor) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .readTimeout(HTTP_READ_TIMEOUT, TimeUnit.SECONDS)
+                .connectTimeout(HTTP_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .addInterceptor(new ContentTypeHeaderInterceptor());
+
+        if (BuildConfig.DEBUG) {
+            builder.addInterceptor(loggingInterceptor);
+        }
+
+        return builder.build();
+    }
+
+    @Provides
+    Retrofit provideRetrofit(OkHttpClient client, ServiceConfig serviceConfig) {
+        return new Retrofit.Builder()
+                .baseUrl(serviceConfig.getBaseServiceUrl())
+                .client(client)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
     }
 
     @Provides
@@ -36,32 +64,9 @@ class AppModule {
     }
 
     @Provides
-    ServiceConfig provideServiceConfig() {
-        return new ServiceConfig(STOCK_SERVICE_ENDPOINT);
+    @Singleton
+    StockDataRepository provideStockDataRepository(StockService stockService) {
+        return new StockDataRepository(stockService);
     }
 
-    @Provides
-    Retrofit provideRetrofit(OkHttpClient client, ServiceConfig serviceConfig) {
-        return new Retrofit.Builder()
-                .baseUrl(serviceConfig.getBaseServiceUrl())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-    }
-
-    @Provides
-    OkHttpClient provideOkHttpClient(HttpLoggingInterceptor loggingInterceptor) {
-        return new OkHttpClient.Builder()
-                .readTimeout(HTTP_READ_TIMEOUT, TimeUnit.SECONDS)
-                .connectTimeout(HTTP_CONNECT_TIMEOUT, TimeUnit.SECONDS)
-                .addInterceptor(loggingInterceptor)
-                .addInterceptor(new ContentTypeHeaderInterceptor())
-                .build();
-    }
-
-    @Provides
-    HttpLoggingInterceptor provideLoggingInterceptor() {
-        return new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
-    }
 }

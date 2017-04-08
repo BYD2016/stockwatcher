@@ -10,7 +10,19 @@ import retrofit2.http.Query;
 
 public class StockService {
 
-    private final StockServiceInterface service;
+    private final StockServiceInterface mService;
+
+    public StockService(Retrofit retrofit) {
+        mService = retrofit.create(StockServiceInterface.class);
+    }
+
+    public Observable<StockInfoResponse> stockInfo(String symbol) {
+        return mService.stockInfo(symbol);
+    }
+
+    public Observable<List<StockSymbol>> lookupStock(String symbol) {
+        return mService.lookupStock(symbol);
+    }
 
     interface StockServiceInterface {
         @GET("Quote/json")
@@ -18,17 +30,5 @@ public class StockService {
 
         @GET("Lookup/json")
         Observable<List<StockSymbol>> lookupStock(@Query("input") String symbol);
-    }
-
-    public StockService(Retrofit retrofit) {
-        service = retrofit.create(StockServiceInterface.class);
-    }
-
-    public Observable<StockInfoResponse> stockInfo(String symbol) {
-        return service.stockInfo(symbol);
-    }
-
-    public Observable<List<StockSymbol>> lookupStock(String symbol) {
-        return service.lookupStock(symbol);
     }
 }

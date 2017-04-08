@@ -8,7 +8,7 @@ import okhttp3.Response;
 
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 
-public class ContentTypeHeaderInterceptor implements Interceptor {
+public final class ContentTypeHeaderInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {

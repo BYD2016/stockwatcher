@@ -1,6 +1,6 @@
 package com.bignerdranch.stockwatcher.ui;
 
-public class StockInfoActivity extends SingleFragmentActivity {
+public final class StockInfoActivity extends SingleFragmentActivity {
 
     @Override
     protected StockInfoFragment createFragment() {
